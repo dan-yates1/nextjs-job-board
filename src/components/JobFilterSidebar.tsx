@@ -18,7 +18,7 @@ async function filterJobs(formData: FormData) {
     ...(q && { q: q.trim() }),
     ...(type && { type }),
     ...(location && { location }),
-    ...(remote && {remote: "true"}),
+    ...(remote && { remote: "true" }),
   });
 
   redirect(`/?${searchParams.toString()}`);
