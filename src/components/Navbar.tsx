@@ -13,7 +13,7 @@ export default function Navbar() {
                 height={40}
                 alt="Company logo"
                 />
-                <span className="text-xl font-bold tracking-tight">Job Finder</span>
+                <span className="text-xl font-bold tracking-tight">Tech Jobs</span>
             </Link>
             <Button asChild>
                 <Link href="/jobs/new">Post a job</Link>
