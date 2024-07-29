@@ -1,6 +1,7 @@
 import { forwardRef, useMemo, useState } from "react";
 import { Input } from "./ui/input";
 import citiesList from "@/lib/cities-list";
+import { set } from "date-fns";
 
 interface LocationInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -10,6 +11,7 @@ interface LocationInputProps
 export default forwardRef<HTMLInputElement, LocationInputProps>(
   function LocationInput({ onLocationSelected, ...props }, ref) {
     const [locationSearchInput, setLocationSearchInput] = useState("");
+    const [hasFocus, setHasFocus] = useState(false);
 
     const cities = useMemo(() => {
       if (!locationSearchInput.trim()) return [];
@@ -24,9 +26,42 @@ export default forwardRef<HTMLInputElement, LocationInputProps>(
             searchWords.every((word) =>
               city.toLowerCase().includes(word.toLowerCase())
             )
-        );
+        )
+        .slice(0, 5);
     }, [locationSearchInput]);
 
-    return <Input {...props} ref={ref} />;
+    return (
+      <div className="relative">
+        <Input
+          placeholder="Search for a city"
+          type="search"
+          value={locationSearchInput}
+          {...props}
+          onChange={(e) => setLocationSearchInput(e.target.value)}
+          onFocus={() => setHasFocus(true)}
+          onBlur={() => setHasFocus(false)}
+          {...props}
+          ref={ref}
+        />
+        {locationSearchInput.trim() && hasFocus && (
+          <div className="absolute w-full z-20 divide-y bg-background shadow-xl border-x border-b rounded-b-lg">
+            {!cities.length && <p className="p-3">No results found</p>}
+            {cities.map((city) => (
+              <button
+                key={city}
+                className="block w-full text-start p-2"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  onLocationSelected(city);
+                  setLocationSearchInput("");
+                }}
+              >
+                {city}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
   }
 );
