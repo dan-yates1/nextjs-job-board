@@ -13,6 +13,9 @@ import { createJobSchema, CreateJobValues } from "@/lib/validation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
+import Select from "@/components/ui/select";
+import { jobTypes, locationTypes } from "@/lib/job-types";
+import LocationInput from "@/components/LocationInput";
 
 export default function NewJobForm() {
   const form = useForm<CreateJobValues>({
@@ -62,6 +65,105 @@ export default function NewJobForm() {
                   <FormLabel>Job title</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g. Frontend Developer" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Job type</FormLabel>
+                  <FormControl>
+                    <Select {...field} defaultValue="">
+                      <option value="" hidden>
+                        Select an option
+                      </option>
+                      {jobTypes.map((jobType) => (
+                        <option key={jobType} value={jobType}>
+                          {jobType}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="companyName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Company</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="companyLogo"
+              render={({ field: { value, ...fieldValues } }) => (
+                <FormItem>
+                  <FormLabel>Company logo</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...fieldValues}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        fieldValues.onChange(file);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <Select {...field} defaultValue="">
+                      <option value="" hidden>
+                        Select an option
+                      </option>
+                      {locationTypes.map((locationTypes) => (
+                        <option key={locationTypes} value={locationTypes}>
+                          {locationTypes}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Office location</FormLabel>
+                  <FormControl>
+                    <LocationInput
+                      onLocationSelected={field.onChange}
+                      ref={field.ref}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
