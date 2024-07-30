@@ -22,48 +22,32 @@ export default function JobListItem({
   },
 }: JobListItemProps) {
   return (
-    <article className="flex gap-3 rounded-lg border p-5 hover:bg-muted/60">
+    <article className="flex items-start gap-4 p-4 border rounded-lg">
       <Image
         src={companyLogoUrl || companyLogoPlaceholder}
         alt={`${companyName} logo`}
-        width={100}
-        height={100}
-        className="self-center rounded-lg"
+        width={48}
+        height={48}
+        className="rounded-lg"
       />
-      <div className="flex-grow space-y-3">
-        <div>
-          <h2 className="text-xl font-medium">{title}</h2>
-          <p className="text-muted-foreground">{companyName}</p>
+      <div className="flex-grow">
+        <div className="flex justify-between items-start">
+          <div>
+            <h2 className="text-lg font-medium">{title}</h2>
+            <p className="text-sm text-gray-500">{companyName}</p>
+          </div>
+          <span className="text-sm text-gray-400">{relativeDate(createdAt)}</span>
         </div>
-        <div className="text-muted-foreground">
-          <p className="flex items-center gap-1.5 sm:hidden">
-            <Briefcase size={16} className="shrink-0" />
-            {type}
+        <div className="mt-2 text-gray-600 space-y-1">
+          <p className="flex items-center text-sm">
+            <MapPin size={16} className="mr-2" />
+            {locationType}, {location || "Worldwide"}
           </p>
-          <p className="flex items-center gap-1.5">
-            <MapPin size={16} className="shrink-0" />
-            {locationType}
-          </p>
-          <p className="flex items-center gap-1.5">
-            <Globe2 size={16} className="shrink-0" />
-            {location || "Worldwide"}
-          </p>
-          <p className="flex items-center gap-1.5">
-            <Banknote size={16} className="shrink-0" />
+          <p className="flex items-center text-sm">
+            <Banknote size={16} className="mr-2" />
             {formatMoney(salary)}
           </p>
-          <p className="flex items-center gap-1.5 sm:hidden">
-            <Clock size={16} className="shrink-0" />
-            {relativeDate(createdAt)}
-          </p>
         </div>
-      </div>
-      <div className="hidden shrink-0 flex-col items-end justify-between sm:flex">
-        <Badge>{type}</Badge>
-        <span className="flex items-center gap-1.5 text-muted-foreground">
-          <Clock size={16} />
-          {relativeDate(createdAt)}
-        </span>
       </div>
     </article>
   );
