@@ -1,9 +1,8 @@
 import companyLogoPlaceholder from "@/assets/company-logo-placeholder.png";
 import { formatMoney, relativeDate } from "@/lib/utils";
 import { Job } from "@prisma/client";
-import { Banknote, Briefcase, Clock, Globe2, MapPin } from "lucide-react";
+import { Banknote, MapPin } from "lucide-react";
 import Image from "next/image";
-import Badge from "./Badge";
 
 interface JobListItemProps {
   job: Job;
@@ -22,7 +21,7 @@ export default function JobListItem({
   },
 }: JobListItemProps) {
   return (
-    <article className="flex items-start gap-4 p-4 border rounded-lg">
+    <article className="flex items-start gap-4 rounded-lg border p-4">
       <Image
         src={companyLogoUrl || companyLogoPlaceholder}
         alt={`${companyName} logo`}
@@ -31,14 +30,16 @@ export default function JobListItem({
         className="rounded-lg"
       />
       <div className="flex-grow">
-        <div className="flex justify-between items-start">
+        <div className="flex items-start justify-between">
           <div>
             <h2 className="text-lg font-medium">{title}</h2>
             <p className="text-sm text-gray-500">{companyName}</p>
           </div>
-          <span className="text-sm text-gray-400">{relativeDate(createdAt)}</span>
+          <span className="text-sm text-gray-400">
+            {relativeDate(createdAt)}
+          </span>
         </div>
-        <div className="mt-2 text-gray-600 space-y-1">
+        <div className="mt-2 space-y-1 text-gray-600">
           <p className="flex items-center text-sm">
             <MapPin size={16} className="mr-2" />
             {locationType}, {location || "Worldwide"}
