@@ -17,10 +17,10 @@ function getTitle({ q, type, location, remote }: JobFilterValues) {
   const titlePrefix = q
     ? `${q} jobs`
     : type
-      ? `${type} jobs`
+      ? `${type} developer jobs`
       : remote
-        ? "Remote jobs"
-        : "All jobs";
+        ? "Remote developer jobs"
+        : "All developer jobs";
 
   const titleSuffix = location ? ` in ${location}` : "";
 
@@ -36,7 +36,7 @@ export function generateMetadata({
       type,
       location,
       remote: remote === "true",
-    })} | Tech Jobs`,
+    })} | Flow Jobs`,
   };
 }
 
@@ -51,12 +51,12 @@ export default async function Home({
   };
 
   return (
-    <main className="max-w-5xl m-auto px-3 my-10 space-y-10">
+    <main className="m-auto my-10 max-w-5xl space-y-10 px-3">
       <div className="space-y-5 text-center">
         <H1>{getTitle(filterValues)}</H1>
         <p className="text-muted-foreground">Find your dream job.</p>
       </div>
-      <section className="flex flex-col md:flex-row gap-4">
+      <section className="flex flex-col gap-4 md:flex-row">
         <JobFilterSidebar defaultValues={filterValues} />
         <JobResults filterValues={filterValues} />
       </section>

@@ -1,10 +1,10 @@
 export const jobTypes = [
-    "Full-time",
-    "Part-time",
-    "Internship",
-    "Contract",
-    "Temporary",
-    "Volunteer",
-]
+  "Full-time",
+  "Part-time",
+  "Contract",
+  "Temporary",
+  "Internship",
+  "Volunteer",
+];
 
-export const locationTypes = ["Remote", "On-site", "Hybrid"]
+export const locationTypes = ["Remote", "On-site", "Hybrid"];

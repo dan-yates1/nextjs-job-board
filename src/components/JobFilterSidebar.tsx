@@ -1,11 +1,11 @@
+import { jobTypes } from "@/lib/job-types";
 import prisma from "@/lib/prisma";
+import { JobFilterValues, jobFilterSchema } from "@/lib/validation";
+import { redirect } from "next/navigation";
+import FormSubmitButton from "./FormSubmitButton";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import Select from "./ui/select";
-import { jobTypes } from "@/lib/job-types";
-import { jobFilterSchema, JobFilterValues } from "@/lib/validation";
-import { redirect } from "next/navigation";
-import FormSubmitButton from "./FormSubmitButton";
 
 async function filterJobs(formData: FormData) {
   "use server";
@@ -24,13 +24,13 @@ async function filterJobs(formData: FormData) {
   redirect(`/?${searchParams.toString()}`);
 }
 
-interface jobFilterSidebarProps {
+interface JobFilterSidebarProps {
   defaultValues: JobFilterValues;
 }
 
-export default async function jobFilterSidebar({
+export default async function JobFilterSidebar({
   defaultValues,
-}: jobFilterSidebarProps) {
+}: JobFilterSidebarProps) {
   const distinctLocations = (await prisma.job
     .findMany({
       where: { approved: true },
@@ -38,11 +38,11 @@ export default async function jobFilterSidebar({
       distinct: ["location"],
     })
     .then((locations) =>
-      locations.map(({ location }) => location).filter(Boolean)
+      locations.map(({ location }) => location).filter(Boolean),
     )) as string[];
 
   return (
-    <aside className="md:w-[260px] p-4 sticky top-0 h-fit bg-background border rounded-lg">
+    <aside className="sticky top-0 h-fit rounded-lg border bg-background p-4 md:w-[260px]">
       <form action={filterJobs} key={JSON.stringify(defaultValues)}>
         <div className="space-y-4">
           <div className="flex flex-col gap-2">
@@ -94,9 +94,7 @@ export default async function jobFilterSidebar({
             />
             <Label htmlFor="remote">Remote jobs</Label>
           </div>
-          <FormSubmitButton className="w-full" type="submit">
-            Filter jobs
-          </FormSubmitButton>
+          <FormSubmitButton className="w-full">Filter jobs</FormSubmitButton>
         </div>
       </form>
     </aside>

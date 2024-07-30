@@ -1,7 +1,6 @@
+import citiesList from "@/lib/cities-list";
 import { forwardRef, useMemo, useState } from "react";
 import { Input } from "./ui/input";
-import citiesList from "@/lib/cities-list";
-import { set } from "date-fns";
 
 interface LocationInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -24,8 +23,8 @@ export default forwardRef<HTMLInputElement, LocationInputProps>(
           (city) =>
             city.toLowerCase().startsWith(searchWords[0].toLowerCase()) &&
             searchWords.every((word) =>
-              city.toLowerCase().includes(word.toLowerCase())
-            )
+              city.toLowerCase().includes(word.toLowerCase()),
+            ),
         )
         .slice(0, 5);
     }, [locationSearchInput]);
@@ -33,10 +32,9 @@ export default forwardRef<HTMLInputElement, LocationInputProps>(
     return (
       <div className="relative">
         <Input
-          placeholder="Search for a city"
+          placeholder="Search for a city..."
           type="search"
           value={locationSearchInput}
-          {...props}
           onChange={(e) => setLocationSearchInput(e.target.value)}
           onFocus={() => setHasFocus(true)}
           onBlur={() => setHasFocus(false)}
@@ -44,12 +42,12 @@ export default forwardRef<HTMLInputElement, LocationInputProps>(
           ref={ref}
         />
         {locationSearchInput.trim() && hasFocus && (
-          <div className="absolute w-full z-20 divide-y bg-background shadow-xl border-x border-b rounded-b-lg">
-            {!cities.length && <p className="p-3">No results found</p>}
+          <div className="absolute z-20 w-full divide-y rounded-b-lg border-x border-b bg-background shadow-xl">
+            {!cities.length && <p className="p-3">No results found.</p>}
             {cities.map((city) => (
               <button
                 key={city}
-                className="block w-full text-start p-2"
+                className="block w-full p-2 text-start"
                 onMouseDown={(e) => {
                   e.preventDefault();
                   onLocationSelected(city);
@@ -63,5 +61,5 @@ export default forwardRef<HTMLInputElement, LocationInputProps>(
         )}
       </div>
     );
-  }
+  },
 );

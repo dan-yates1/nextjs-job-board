@@ -8,7 +8,7 @@ const companyLogoSchema = z
   .custom<File | undefined>()
   .refine(
     (file) => !file || (file instanceof File && file.type.startsWith("image/")),
-    "Must be an image file"
+    "Must be an image file",
   )
   .refine((file) => {
     return !file || file.size < 1024 * 1024 * 2;
@@ -20,7 +20,7 @@ const applicationSchema = z
     applicationUrl: z.string().max(100).url().optional().or(z.literal("")),
   })
   .refine((data) => data.applicationEmail || data.applicationUrl, {
-    message: "Must provide either an email or a URL",
+    message: "Email or url is required",
     path: ["applicationEmail"],
   });
 
@@ -28,44 +28,38 @@ const locationSchema = z
   .object({
     locationType: requiredString.refine(
       (value) => locationTypes.includes(value),
-      "Invalid location type"
+      "Invalid location type",
     ),
     location: z.string().max(100).optional(),
   })
   .refine(
     (data) =>
-      !data.locationType || data.locationType === "remote" || data.location,
+      !data.locationType || data.locationType === "Remote" || data.location,
     {
-      message: "Must provide a location for on-site jobs",
+      message: "Location is required for on-site jobs",
       path: ["location"],
-    }
+    },
   );
 
 export const createJobSchema = z
   .object({
-    title: requiredString.max(100, "Title must be less than 100 characters"),
+    title: requiredString.max(100),
     type: requiredString.refine(
       (value) => jobTypes.includes(value),
-      "Invalid job type"
+      "Invalid job type",
     ),
-    companyName: requiredString.max(
-      100,
-      "Company name must be less than 100 characters"
-    ),
+    companyName: requiredString.max(100),
     companyLogo: companyLogoSchema,
-    description: z
-      .string()
-      .max(5000, "Description must be less than 5000 characters")
-      .optional(),
+    description: z.string().max(5000).optional(),
     salary: numericRequiredString.max(
       9,
-      "Number can't be longer than 9 digits"
+      "Number can't be longer than 9 digits",
     ),
   })
   .and(applicationSchema)
   .and(locationSchema);
 
-  export type CreateJobValues = z.infer<typeof createJobSchema>;
+export type CreateJobValues = z.infer<typeof createJobSchema>;
 
 export const jobFilterSchema = z.object({
   q: z.string().optional(),

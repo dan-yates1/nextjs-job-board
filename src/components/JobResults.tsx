@@ -1,7 +1,7 @@
-import JobListItem from "@/components/JobListItem";
 import prisma from "@/lib/prisma";
 import { JobFilterValues } from "@/lib/validation";
 import { Prisma } from "@prisma/client";
+import JobListItem from "./JobListItem";
 
 interface JobResultsProps {
   filterValues: JobFilterValues;
@@ -27,15 +27,15 @@ export default async function JobResults({
       }
     : {};
 
-    const where: Prisma.JobWhereInput = {
-        AND: [
-            searchFilter,
-            type ? {type}: {},
-            location ? {location}: {},
-            remote? {locationType: "remote"}: {},
-            { approved: true },
-        ]
-    }
+  const where: Prisma.JobWhereInput = {
+    AND: [
+      searchFilter,
+      type ? { type } : {},
+      location ? { location } : {},
+      remote ? { locationType: "Remote" } : {},
+      { approved: true },
+    ],
+  };
 
   const jobs = await prisma.job.findMany({
     where,
@@ -43,13 +43,13 @@ export default async function JobResults({
   });
 
   return (
-    <div className="space-y-4 grow">
+    <div className="grow space-y-4">
       {jobs.map((job) => (
         <JobListItem job={job} key={job.id} />
       ))}
       {jobs.length === 0 && (
         <p className="m-auto text-center">
-          No jobs found. Try a different search.
+          No jobs found. Try adjusting your search filters.
         </p>
       )}
     </div>

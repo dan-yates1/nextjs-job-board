@@ -1,5 +1,8 @@
 "use client";
 
+import LoadingButton from "@/components/LoadingButton";
+import LocationInput from "@/components/LocationInput";
+import RichTextEditor from "@/components/RichTextEditor";
 import {
   Form,
   FormControl,
@@ -9,13 +12,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import H1 from "@/components/ui/h1";
-import { createJobSchema, CreateJobValues } from "@/lib/validation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import Select from "@/components/ui/select";
 import { jobTypes, locationTypes } from "@/lib/job-types";
-import LocationInput from "@/components/LocationInput";
+import { CreateJobValues, createJobSchema } from "@/lib/validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { X } from "lucide-react";
+import { draftToMarkdown } from "markdown-draft-js";
+import { useForm } from "react-hook-form";
 
 export default function NewJobForm() {
   const form = useForm<CreateJobValues>({
@@ -29,7 +34,7 @@ export default function NewJobForm() {
     control,
     setValue,
     setFocus,
-    formState: { isSubmitted },
+    formState: { isSubmitting },
   } = form;
 
   async function onSubmit(values: CreateJobValues) {
@@ -37,14 +42,14 @@ export default function NewJobForm() {
   }
 
   return (
-    <main className="max-w-3xl m-auto my-10 space-y-10">
+    <main className="m-auto my-10 max-w-3xl space-y-10">
       <div className="space-y-5 text-center">
-        <H1>Post a new job</H1>
+        <H1>Find your perfect developer</H1>
         <p className="text-muted-foreground">
-          Get your job posting seen by thousands of developers.
+          Get your job posting seen by thousands of job seekers.
         </p>
       </div>
-      <div className="space-y-6 border rounded-lg p-4">
+      <div className="space-y-6 rounded-lg border p-4">
         <div>
           <h2 className="font-semibold">Job details</h2>
           <p className="text-muted-foreground">
@@ -70,7 +75,6 @@ export default function NewJobForm() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={control}
               name="type"
@@ -93,7 +97,6 @@ export default function NewJobForm() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={control}
               name="companyName"
@@ -107,7 +110,6 @@ export default function NewJobForm() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={control}
               name="companyLogo"
@@ -129,21 +131,29 @@ export default function NewJobForm() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={control}
-              name="location"
+              name="locationType"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Location</FormLabel>
                   <FormControl>
-                    <Select {...field} defaultValue="">
+                    <Select
+                      {...field}
+                      defaultValue=""
+                      onChange={(e) => {
+                        field.onChange(e);
+                        if (e.currentTarget.value === "Remote") {
+                          trigger("location");
+                        }
+                      }}
+                    >
                       <option value="" hidden>
                         Select an option
                       </option>
-                      {locationTypes.map((locationTypes) => (
-                        <option key={locationTypes} value={locationTypes}>
-                          {locationTypes}
+                      {locationTypes.map((locationType) => (
+                        <option key={locationType} value={locationType}>
+                          {locationType}
                         </option>
                       ))}
                     </Select>
@@ -152,7 +162,6 @@ export default function NewJobForm() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={control}
               name="location"
@@ -165,10 +174,104 @@ export default function NewJobForm() {
                       ref={field.ref}
                     />
                   </FormControl>
+                  {watch("location") && (
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setValue("location", "", { shouldValidate: true });
+                        }}
+                      >
+                        <X size={20} />
+                      </button>
+                      <span className="text-sm">{watch("location")}</span>
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <div className="space-y-2">
+              <Label htmlFor="applicationEmail">How to apply</Label>
+              <div className="flex justify-between">
+                <FormField
+                  control={control}
+                  name="applicationEmail"
+                  render={({ field }) => (
+                    <FormItem className="grow">
+                      <FormControl>
+                        <div className="flex items-center">
+                          <Input
+                            id="applicationEmail"
+                            placeholder="Email"
+                            type="email"
+                            {...field}
+                          />
+                          <span className="mx-2">or</span>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name="applicationUrl"
+                  render={({ field }) => (
+                    <FormItem className="grow">
+                      <FormControl>
+                        <Input
+                          placeholder="Website"
+                          type="url"
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            trigger("applicationEmail");
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <FormField
+              control={control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <Label onClick={() => setFocus("description")}>
+                    Description
+                  </Label>
+                  <FormControl>
+                    <RichTextEditor
+                      onChange={(draft) =>
+                        field.onChange(draftToMarkdown(draft))
+                      }
+                      ref={field.ref}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="salary"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Salary</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <LoadingButton type="submit" loading={isSubmitting}>
+              Submit
+            </LoadingButton>
           </form>
         </Form>
       </div>
