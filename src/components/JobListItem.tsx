@@ -21,12 +21,12 @@ export default function JobListItem({
   },
 }: JobListItemProps) {
   return (
-    <article className="flex items-start gap-4 rounded-lg border p-4">
+    <article className="flex items-center gap-4 rounded-lg border p-4">
       <Image
         src={companyLogoUrl || companyLogoPlaceholder}
         alt={`${companyName} logo`}
-        width={48}
-        height={48}
+        width={70}
+        height={70}
         className="rounded-lg"
       />
       <div className="flex-grow">
@@ -42,7 +42,7 @@ export default function JobListItem({
         <div className="mt-2 space-y-1 text-gray-600">
           <p className="flex items-center text-sm">
             <MapPin size={16} className="mr-2" />
-            {locationType}, {location || "Worldwide"}
+            {location || "Worldwide"} ({locationType})
           </p>
           <p className="flex items-center text-sm">
             <Banknote size={16} className="mr-2" />
