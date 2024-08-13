@@ -33,13 +33,13 @@ export default function JobListItem({
         <div className="flex items-start justify-between">
           <div>
             <h2 className="text-lg font-medium">{title}</h2>
-            <p className="text-sm text-gray-500">{companyName}</p>
+            <p className="text-sm text-muted-foreground">{companyName}</p>
           </div>
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-muted-foreground">
             {relativeDate(createdAt)}
           </span>
         </div>
-        <div className="mt-2 space-y-1 text-gray-600">
+        <div className="mt-2 space-y-1 text-muted-foreground">
           <p className="flex items-center text-sm">
             <MapPin size={16} className="mr-2" />
             {location || "Worldwide"} ({locationType})

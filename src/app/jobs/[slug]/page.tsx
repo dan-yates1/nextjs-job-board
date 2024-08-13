@@ -1,3 +1,4 @@
+import JobPage from "@/components/JobPage";
 import prisma from "@/lib/prisma";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -32,5 +33,9 @@ export async function generateMetadata({
 export default async function Page({ params: { slug } }: PageProps) {
   const job = await getJob(slug);
 
-  return <main></main>
+  return (
+    <main className="m-auto px-3 flex max-w-5xl flex-col items-center gap-5 md:flex-row md:items-start">
+      <JobPage job={job} />
+    </main>
+  );
 }
