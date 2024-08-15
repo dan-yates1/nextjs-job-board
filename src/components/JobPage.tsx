@@ -3,6 +3,7 @@ import { Job } from "@prisma/client";
 import { Banknote, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import Markdown from "./Markdown";
 
 interface JobPageProps {
   job: Job;
@@ -40,7 +41,7 @@ export default function JobPage({
               {applicationUrl ? (
                 <Link
                   href={new URL(applicationUrl).origin}
-                  className="text-orange-500 hover:underline"
+                  className="text-primary hover:underline"
                 >
                   {companyName}
                 </Link>
@@ -67,7 +68,7 @@ export default function JobPage({
         </div>
       </div>
       <div>
-        {description}
+        {description && <Markdown>{description}</Markdown>}
       </div>
     </section>
   );
