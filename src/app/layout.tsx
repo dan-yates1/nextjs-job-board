@@ -21,14 +21,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={`${inter.className} min-w-[350px]`}>
-          <Navbar />
-          {children}
-          <Footer />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={`${inter.className} min-w-[350px]`}>
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
+    </html>
   );
 }
