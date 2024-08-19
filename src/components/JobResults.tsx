@@ -3,8 +3,15 @@ import { JobFilterValues } from "@/lib/validation";
 import { Prisma } from "@prisma/client";
 import JobListItem from "./JobListItem";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface JobResultsProps {
   filterValues: JobFilterValues;
@@ -58,6 +65,8 @@ export default async function JobResults({
 
   const [jobs, count] = await Promise.all([jobsPromise, countPromise]);
 
+  const totalPages = Math.ceil(count / jobsPerPage);
+
   return (
     <div className="grow space-y-4">
       {jobs.map((job) => (
@@ -71,9 +80,9 @@ export default async function JobResults({
         </p>
       )}
       {jobs.length > 0 && (
-        <Pagination
+        <PaginationComponent
           currentPage={page}
-          count={Math.ceil(count / jobsPerPage)}
+          totalPages={totalPages}
           filterValues={filterValues}
         />
       )}
@@ -81,17 +90,17 @@ export default async function JobResults({
   );
 }
 
-interface PaginationProps {
+interface PaginationComponentProps {
   currentPage: number;
-  count: number;
+  totalPages: number;
   filterValues: JobFilterValues;
 }
 
-function Pagination({
+function PaginationComponent({
   currentPage,
-  count,
+  totalPages,
   filterValues: { q, type, location, remote },
-}: PaginationProps) {
+}: PaginationComponentProps) {
   function generatePageLink(page: number) {
     const searchParams = new URLSearchParams({
       ...(q && { q }),
@@ -104,31 +113,92 @@ function Pagination({
     return `/?${searchParams.toString()}`;
   }
 
+  const getLinkClassName = (page: number) => {
+    return page === currentPage
+      ? "border border-gray-300 font-semibold px-3 py-1 rounded"
+      : "px-3 py-1";
+  };
+
   return (
-    <div className="flex justify-between">
-      <Link
-        href={generatePageLink(currentPage - 1)}
-        className={cn(
-          "flex items-center gap-2 font-semibold",
-          currentPage <= 1 && "invisible",
+    <Pagination>
+      <PaginationContent>
+        {currentPage > 1 && (
+          <PaginationItem>
+            <PaginationPrevious href={generatePageLink(currentPage - 1)} />
+          </PaginationItem>
         )}
-      >
-        <ArrowLeft size={16} />
-        Previous page
-      </Link>
-      <span className="font-semibold">
-        Page {currentPage} of {count}
-      </span>
-      <Link
-        href={generatePageLink(currentPage + 1)}
-        className={cn(
-          "flex items-center gap-2 font-semibold",
-          currentPage >= count && "invisible",
+
+        <PaginationItem>
+          <PaginationLink
+            href={generatePageLink(1)}
+            className={getLinkClassName(1)}
+          >
+            1
+          </PaginationLink>
+        </PaginationItem>
+
+        {currentPage > 3 && totalPages > 3 && (
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
         )}
-      >
-        Next page
-        <ArrowRight size={16} />
-      </Link>
-    </div>
+
+        {currentPage > 2 && (
+          <PaginationItem>
+            <PaginationLink
+              href={generatePageLink(currentPage - 1)}
+              className={getLinkClassName(currentPage - 1)}
+            >
+              {currentPage - 1}
+            </PaginationLink>
+          </PaginationItem>
+        )}
+
+        {currentPage !== 1 && currentPage !== totalPages && (
+          <PaginationItem>
+            <PaginationLink
+              href={generatePageLink(currentPage)}
+              className={getLinkClassName(currentPage)}
+            >
+              {currentPage}
+            </PaginationLink>
+          </PaginationItem>
+        )}
+
+        {currentPage < totalPages - 1 && (
+          <PaginationItem>
+            <PaginationLink
+              href={generatePageLink(currentPage + 1)}
+              className={getLinkClassName(currentPage + 1)}
+            >
+              {currentPage + 1}
+            </PaginationLink>
+          </PaginationItem>
+        )}
+
+        {currentPage < totalPages - 2 && totalPages > 3 && (
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+        )}
+
+        {totalPages > 1 && currentPage !== totalPages && (
+          <PaginationItem>
+            <PaginationLink
+              href={generatePageLink(totalPages)}
+              className={getLinkClassName(totalPages)}
+            >
+              {totalPages}
+            </PaginationLink>
+          </PaginationItem>
+        )}
+
+        {currentPage < totalPages && (
+          <PaginationItem>
+            <PaginationNext href={generatePageLink(currentPage + 1)} />
+          </PaginationItem>
+        )}
+      </PaginationContent>
+    </Pagination>
   );
 }
